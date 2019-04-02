@@ -1,7 +1,7 @@
 # mj520/nginx-php
 FROM centos:7
 MAINTAINER nginx-php
-ENV phpV=php73
+ENV phpV=php70
 RUN yum install -y wget epel-release && \
     wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
     wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo && \
