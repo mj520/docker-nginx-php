@@ -12,8 +12,7 @@ RUN yum install -y wget epel-release && \
     yum install -y iproute net-tools inotify-tools which jq rsync && \
     yum install -y openssh-clients mysql-community-client ImageMagick zbar && \ 
     yum -y install supervisor && \ 
-    echo "files = /etc/supervisord.conf.d/*.conf" >> /etc/supervisord.conf && \ 
-    echo "files = /data/conf/supervisord.conf.d/*.conf" >> /etc/supervisord.conf && \ 
+    echo "files = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" >> /etc/supervisord.conf && \
     yum install -y nginx  && \ 
     groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /bin/bash --comment www nginx && \
