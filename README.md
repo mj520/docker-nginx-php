@@ -29,7 +29,7 @@ docker container with Nginx + PHP-FPM from centos:7 use supervisor.
  pecl-memcache phalcon3 pecl-swoole4
 ```
 
-#### - Directory structure inside image
+#### - Directory structure
 ```
 /data/conf 
     php.ini  # replace php config
