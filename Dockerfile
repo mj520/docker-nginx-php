@@ -45,7 +45,7 @@ RUN yum install -y wget epel-release && \
     ${phpV}-php-pecl-redis4 \
     ${phpV}-php-pecl-memcache \
     ${phpV}-php-phalcon3 \
-    ${phpV}-php-pecl-swoole4 && \
+    ${phpV}-php-pecl-swoole2 && \
     ln -sfF /opt/remi/${phpV}/enable /etc/profile.d/${phpV}-paths.sh && \
     ln -sfF /opt/remi/${phpV}/root/usr/bin/{pear,pecl,phar,php,php-cgi,php-config,phpize} /usr/local/bin/. && \ 
     mv -f /etc/opt/remi/${phpV}/php.ini /etc/php.ini && ln -s /etc/php.ini /etc/opt/remi/${phpV}/php.ini && \
