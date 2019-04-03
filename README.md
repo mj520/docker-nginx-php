@@ -27,6 +27,8 @@ docker container with Nginx + PHP-FPM from centos:7 use supervisor.
  pecl-mysql pecl-uploadprogress 
  pecl-uuid pecl-zip pecl-redis4 
  pecl-memcache phalcon3 pecl-swoole4
+
+ Note:php5+ Only use pecl-swoole2、php7+ use pecl-swoole4
 ```
 
 #### - Directory structure
