@@ -45,11 +45,11 @@ RUN yum install -y wget epel-release && \
     ${phpV}-php-pecl-redis4 \
     ${phpV}-php-pecl-memcache \
     ${phpV}-php-phalcon3 \
-    ${phpV}-php-pecl-swoole4 && \
+    ${phpV}-php-pecl-swoole2 && \
     ln -sfF /opt/remi/${phpV}/enable /etc/profile.d/${phpV}-paths.sh && \
     ln -sfF /opt/remi/${phpV}/root/usr/bin/{pear,pecl,phar,php,php-cgi,php-config,phpize} /usr/local/bin/. && \ 
-    mv -f /etc/opt/remi/${phpV}/php.ini /etc/php.ini && ln -s /etc/php.ini /etc/opt/remi/${phpV}/php.ini && \
-    rm -rf /etc/php.d && mv /etc/opt/remi/${phpV}/php.d /etc/. && ln -s /etc/php.d /etc/opt/remi/${phpV}/php.d && \
+    mv -f /opt/remi/${phpV}/root/etc/php.ini /etc/php.ini && ln -s /etc/php.ini /opt/remi/${phpV}/root/etc/php.ini && \
+    rm -rf /etc/php.d && mv /opt/remi/${phpV}/root/etc/php.d /etc/. && ln -s /etc/php.d /opt/remi/${phpV}/root/etc/php.d && \
     mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     echo 'PHP installed.' && php --version && \
     wget https://dl.laravel-china.org/composer.phar -O /usr/local/bin/composer && \
