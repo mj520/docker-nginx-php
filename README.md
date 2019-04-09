@@ -3,9 +3,11 @@
 This is a [mj520/nginx-php](https://registry.hub.docker.com/u/mj520/nginx-php/)
 docker container with Nginx + PHP-FPM from centos:7 use supervisor.
 
-#### - Nginx 1.4+
-`/data/conf/nginx`. Add vhost *.default
-`/etc/nginx/fastcgi_params` php fastcgi fix
+#### - Nginx 1.4+ stream
+```
+/etc/nginx/fastcgi_params is default
+php PATH_INFO fix See default.conf below for details
+```
 
 #### - Php version
 |pull path|version|build|
@@ -36,8 +38,9 @@ docker container with Nginx + PHP-FPM from centos:7 use supervisor.
 /data/conf 
     php.ini  # replace php config
     php-fpm*.conf # replace php-fpm config
-    supervisord.conf.d/*.conf # 启动其他程序
-    nginx/*conf # replace nginx config  and vhost
+    supervisord.conf.d/*.conf # supervisord config
+    nginx/*.conf # replace nginx http config and vhost
+    nginx/*.stream # replace nginx stream config
 /data/www # user www home
 /data/logs/ # Nginx, PHP logs
 /data/tmp/php/ # PHP temp directories
