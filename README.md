@@ -3,7 +3,7 @@
 This is a [mj520/nginx-php](https://registry.hub.docker.com/u/mj520/nginx-php/)
 docker container with Nginx + PHP-FPM from centos:7 use supervisor.
 
-#### - Nginx 1.4+ stream
+#### - Nginx 1.14+ stream
 ```
 /etc/nginx/fastcgi_params is default
 php PATH_INFO fix See default.conf below for details
