@@ -53,7 +53,8 @@ php PATH_INFO fix See default.conf below for details
 
 ## Usage
 #### 
-``` 
+```
+Default China Time Zone use Asia/Shanghai -e TZ= change
 docker run --name=nginx-php -d --privileged=true -p 80:80 -v path/data:/data mj520/nginx-php
 
 #vi /data/conf/nginx/default.conf #for default nginx vhost
