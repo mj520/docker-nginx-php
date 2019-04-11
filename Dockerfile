@@ -57,6 +57,8 @@ RUN yum install -y wget epel-release && \
     echo 'composer installed.' && composer --version && \
     composer config -g repo.packagist composer https://packagist.laravel-china.org && \ 
     yum clean all && rm -rf /tmp/yum*
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ADD container-files /
 EXPOSE 80 443 9000
 CMD source /etc/profile && mkdir -p {/data/conf/nginx,/data/www,/data/logs,/data/tmp} && \
