@@ -15,7 +15,7 @@ RUN yum install -y wget epel-release && \
     echo "files = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" >> /etc/supervisord.conf && \
     yum install -y nginx  && \ 
     groupmod --gid 80 --new-name www nginx && \
-    usermod --uid 80 --home /data/www --gid 80 --login www --shell /bin/bash --comment www nginx && \
+    usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
     echo 'nginx installed.' && nginx -v && \
     yum install -y \
     ${phpV}-php \
@@ -60,6 +60,7 @@ RUN yum install -y wget epel-release && \
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ADD container-files /
+VOLUME [ "/data" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 EXPOSE 80 443 9000
-CMD source /etc/profile && mkdir -p {/data/conf/nginx,/data/www,/data/logs,/data/tmp} && \
-    /usr/bin/supervisord -n -c /etc/supervisord.conf
+CMD /usr/bin/supervisord -n -c /etc/supervisord.conf
