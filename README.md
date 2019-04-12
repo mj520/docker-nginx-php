@@ -82,4 +82,15 @@ server {
 #open http://CONTAINER_IP:PORT/ #in the browser
 ```
 #### Note nginx-reload windows inotify-tools It may be ineffective.
+```
+If your website directory needs write permission, please run it and execute
+#docker exec -it nginx-php chown www:www -R path
+    reason on windows When there are many files
+    docker toolbox chown -R /data/www very slow, docker toolbox has permission.
+    nginx-php is my container name
+php session.save default /tmp, on windows session_save_path("volume/dir"); 
+    Warning: session_start(): Session data file is not created by your uid in ...
+    Warning: session_start(): Failed to read session data: files (path: volume/dir) in ...
+    please change to default
+```
 #Thinks
