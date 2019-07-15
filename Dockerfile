@@ -55,7 +55,7 @@ RUN yum install -y wget epel-release && \
     wget https://dl.laravel-china.org/composer.phar -O /usr/local/bin/composer && \
     chmod a+x /usr/local/bin/composer && \
     echo 'composer installed.' && composer --version && \
-    composer config -g repo.packagist composer https://packagist.laravel-china.org && \ 
+    composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ && \ 
     yum clean all && rm -rf /tmp/yum*
 ADD container-files /
 ENV TZ=Asia/Shanghai
