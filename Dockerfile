@@ -52,7 +52,7 @@ RUN yum install -y wget epel-release && \
     rm -rf /etc/php.d && mv /opt/remi/${phpV}/root/etc/php.d /etc/. && ln -s /etc/php.d /opt/remi/${phpV}/root/etc/php.d && \
     mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     echo 'PHP installed.' && php --version && \
-    wget https://dl.laravel-china.org/composer.phar -O /usr/local/bin/composer && \
+    wget https://getcomposer.org/composer.phar -O /usr/local/bin/composer && \
     chmod a+x /usr/local/bin/composer && \
     echo 'composer installed.' && composer --version && \
     composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ && \ 
