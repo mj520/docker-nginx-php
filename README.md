@@ -13,6 +13,7 @@ php PATH_INFO fix See default.conf below for details
 |pull path|version|build|
 |---|---|----|
 |mj520/nginx-php:latest |php73|master branch |
+|mj520/nginx-php:php74 |php74|php74 branch |    
 |mj520/nginx-php:php73 |php73|php73 branch |
 |mj520/nginx-php:php72 |php72|php72 branch |
 |mj520/nginx-php:php71 |php71|php71 branch |
@@ -21,14 +22,14 @@ php PATH_INFO fix See default.conf below for details
 |mj520/nginx-php:php55 |php55|php55 branch |
 
 
-#### - Install Packages redis memcache swoole4 phalcon3 composer...
+#### - Install Packages redis4+ swoole4 phalcon3 composer...
 ```
  bcmath cli common devel fpm gd gmp intl 
  json mbstring mcrypt mysqlnd opcache pdo 
  pear process pspell xml pecl-imagick 
  pecl-mysql pecl-uploadprogress 
- pecl-uuid pecl-zip pecl-redis4 
- pecl-memcache phalcon3 pecl-swoole4
+ pecl-uuid pecl-zip pecl-redis4+
+ pecl-grpc phalcon3 pecl-swoole4
 
  Note:php5+ Only use pecl-swoole2、php7+ use pecl-swoole4
 ```
