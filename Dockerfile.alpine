@@ -15,8 +15,6 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
         # for next ext
         zlib-dev libpng-dev librdkafka-dev imagemagick-dev  && \ 
-    # localtime
-    \
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     # gd libwebp libjpeg libpng libpng-dev
     docker-php-ext-install -j8 gd && docker-php-ext-enable gd && \
@@ -25,37 +23,37 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     export CPPFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie" && \
     pecl install -o -f redis && docker-php-ext-enable redis && \
-    # pecl install -o -f swoole && docker-php-ext-enable swoole && \
-    # pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
-    # #rdkafka librdkafka librdkafka-dev
-    # pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
-    # #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
-    # pecl install -o -f grpc && docker-php-ext-enable grpc  && \
-    # pecl install -o -f protobuf && docker-php-ext-enable protobuf && \
-    # # phalcon3 # pecl only phalcon4
-    # # pecl install phalcon && docker-php-ext-enable phalcon && \
-    # cd /tmp && apk add bash && \
-    # curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
-    #     -o /tmp/phalcon.tar.gz && \
-    # tar xvf phalcon.tar.gz -C /tmp && \
-    # cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
-    # ./install && \
-    # echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
-    # #imagick imagemagick-libs imagemagick-c++ imagemagick-dev;pecl install not fount;
-    # cd /tmp && \
-    # curl -SL "https://codeload.github.com/Imagick/imagick/tar.gz/${IMAGICK_VERSION}" \
-    #     -o "/tmp/imagick.tar.gz" && \
-    # tar xvf imagick.tar.gz -C /tmp && \
-    # cd "/tmp/imagick-${IMAGICK_VERSION}" && \
-    # phpize && \
-    # ./configure --with-php-config=`which php-config` && \
-    # make &&  make install && make clean && \
-    # echo 'extension="imagick.so"' > "${PHP_INI_DIR}/conf.d/imagick.ini" && \
-    # # composer
-    # curl -SL "https://mirrors.aliyun.com/composer/composer.phar" -o /usr/local/bin/composer && \
-    # chmod a+x /usr/local/bin/composer && \
-    # echo 'composer installed.' && composer --version && \
-    # composer config -g repo.packagist composer "https://mirrors.aliyun.com/composer/" && \
+    pecl install -o -f swoole && docker-php-ext-enable swoole && \
+    pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
+    #rdkafka librdkafka librdkafka-dev
+    pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
+    #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
+    pecl install -o -f grpc && docker-php-ext-enable grpc  && \
+    pecl install -o -f protobuf && docker-php-ext-enable protobuf && \
+    # phalcon3 # pecl only phalcon4
+    # pecl install phalcon && docker-php-ext-enable phalcon && \
+    cd /tmp && apk add bash && \
+    curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
+        -o /tmp/phalcon.tar.gz && \
+    tar xvf phalcon.tar.gz -C /tmp && \
+    cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
+    ./install && \
+    echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
+    #imagick imagemagick-libs imagemagick-c++ imagemagick-dev;pecl install not fount;
+    cd /tmp && \
+    curl -SL "https://codeload.github.com/Imagick/imagick/tar.gz/${IMAGICK_VERSION}" \
+        -o "/tmp/imagick.tar.gz" && \
+    tar xvf imagick.tar.gz -C /tmp && \
+    cd "/tmp/imagick-${IMAGICK_VERSION}" && \
+    phpize && \
+    ./configure --with-php-config=`which php-config` && \
+    make &&  make install && make clean && \
+    echo 'extension="imagick.so"' > "${PHP_INI_DIR}/conf.d/imagick.ini" && \
+    # composer
+    curl -SL "https://mirrors.aliyun.com/composer/composer.phar" -o /usr/local/bin/composer && \
+    chmod a+x /usr/local/bin/composer && \
+    echo 'composer installed.' && composer --version && \
+    composer config -g repo.packagist composer "https://mirrors.aliyun.com/composer/" && \
     echo 'PHP installed.' && php --version && php -m && \
     # runtime package  an clear
     runDeps="$( \
