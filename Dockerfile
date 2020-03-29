@@ -53,7 +53,7 @@ RUN yum install -y wget epel-release && \
     chmod a+x /usr/local/bin/composer && \
     echo 'composer installed.' && composer --version && \
     composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ && \ 
-    yum autoremove && yum clean all && rm -rf /tmp/yum*
+    yum clean all && rm -rf /tmp/yum*
 ADD container-files /
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
