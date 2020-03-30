@@ -9,7 +9,7 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     apk add --no-cache nginx nginx-mod-stream shadow inotify-tools && \
     groupmod --gid 81 cdrw && groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
-    echo 'nginx installed.' && nginx -v && apk del shadow \
+    echo 'nginx installed.' && nginx -v && apk del shadow && \
     #详见官方build   不指定编译扩展包比较大 # PHPIZE_DEPS=autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
