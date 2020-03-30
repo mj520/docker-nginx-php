@@ -15,9 +15,12 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
         # for next ext
         zlib-dev libpng-dev librdkafka-dev imagemagick-dev  && \ 
-    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
+    cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini && \
+    ln -s /usr/local/etc/php/php.ini /etc/php.ini && ln -s /usr/local/etc/php/conf.d /etc/php.d && \
+    mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     # gd libwebp libjpeg libpng libpng-dev
     docker-php-ext-install -j8 gd && docker-php-ext-enable gd && \
+    docker-php-ext-install -j8 pdo_mysql && docker-php-ext-enable pdo_mysql && \
     # redis
     export CFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export CPPFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
