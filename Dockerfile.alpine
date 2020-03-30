@@ -14,10 +14,8 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
         # for next ext
-        zlib-dev libpng-dev librdkafka-dev imagemagick-dev  && \ 
-    cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini && \
-    ln -s /usr/local/etc/php/php.ini /etc/php.ini && ln -s /usr/local/etc/php/conf.d /etc/php.d && \
-    mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
+        zlib-dev libpng-dev librdkafka-dev imagemagick-dev pcre-dev  && \ 
+    cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
     # gd libwebp libjpeg libpng libpng-dev
     docker-php-ext-install -j8 gd && docker-php-ext-enable gd && \
     docker-php-ext-install -j8 pdo_mysql && docker-php-ext-enable pdo_mysql && \
@@ -33,15 +31,16 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
     pecl install -o -f grpc && docker-php-ext-enable grpc  && \
     pecl install -o -f protobuf && docker-php-ext-enable protobuf && \
-    # phalcon3 # pecl only phalcon4
-    # pecl install phalcon && docker-php-ext-enable phalcon && \
-    cd /tmp && apk add bash && \
-    curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
-        -o /tmp/phalcon.tar.gz && \
-    tar xvf phalcon.tar.gz -C /tmp && \
-    cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
-    ./install && \
-    echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
+    # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
+    pecl install phalcon && docker-php-ext-enable phalcon && \
+    pecl install psr && docker-php-ext-enable psr && \
+    # cd /tmp && apk add bash && \
+    # curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
+    #     -o /tmp/phalcon.tar.gz && \
+    # tar xvf phalcon.tar.gz -C /tmp && \
+    # cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
+    # ./install && \
+    # echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
     #imagick imagemagick-libs imagemagick-c++ imagemagick-dev;pecl install not fount;
     cd /tmp && \
     curl -SL "https://codeload.github.com/Imagick/imagick/tar.gz/${IMAGICK_VERSION}" \
@@ -71,6 +70,9 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
 ADD container-files /
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    ln -s ${PHP_INI_DIR}/php.ini /etc/php.ini && mv /etc/php.d/z-php.ini ${PHP_INI_DIR}/conf.d/ && \
+    rm -rf /etc/php.d && ln -s ${PHP_INI_DIR}/conf.d /etc/php.d && \
+    mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     echo -e "[inet_http_server]\nport=127.0.0.1:9001\n[include]\nfiles = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" \
         >> /etc/supervisord.conf && \
     chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord && \
