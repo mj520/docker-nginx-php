@@ -22,29 +22,22 @@ RUN yum install -y wget epel-release && \
     ${phpV}-php-devel \
     ${phpV}-php-fpm \
     ${phpV}-php-gd \
-    ${phpV}-php-gmp \
-    ${phpV}-php-intl \
     ${phpV}-php-json \
     ${phpV}-php-mbstring \
-    ${phpV}-php-mcrypt \
     ${phpV}-php-mysqlnd \
     ${phpV}-php-opcache \
     ${phpV}-php-pdo \
-    ${phpV}-php-pear \
     ${phpV}-php-process \
-    ${phpV}-php-pspell \
     ${phpV}-php-xml \
     ${phpV}-php-pecl-imagick \
-    ${phpV}-php-pecl-mysql \
-    ${phpV}-php-pecl-uploadprogress \
-    ${phpV}-php-pecl-uuid \
-    ${phpV}-php-pecl-zip \
     ${phpV}-php-pecl-redis5 \
+    ${phpV}-php-pecl-protobuf \
     ${phpV}-php-pecl-grpc \
+    ${phpV}-php-pecl-psr \
     ${phpV}-php-phalcon4 \
     ${phpV}-php-pecl-swoole4 && \
     ln -sfF /opt/remi/${phpV}/enable /etc/profile.d/${phpV}-paths.sh && \
-    ln -sfF /opt/remi/${phpV}/root/usr/bin/{pear,pecl,phar,php,php-cgi,php-config,phpize} /usr/local/bin/. && \ 
+    ln -sfF /opt/remi/${phpV}/root/usr/bin/{pecl,phar,php,php-cgi,php-config,phpize} /usr/local/bin/. && \ 
     mv -f /etc/opt/remi/${phpV}/php.ini /etc/php.ini && ln -s /etc/php.ini /etc/opt/remi/${phpV}/php.ini && \
     rm -rf /etc/php.d && mv /etc/opt/remi/${phpV}/php.d /etc/. && ln -s /etc/php.d /etc/opt/remi/${phpV}/php.d && \
     mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
@@ -61,6 +54,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     echo -e "[inet_http_server]\nport=127.0.0.1:9001\n[include]\nfiles = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" \
         >> /etc/supervisord.conf && \
     chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord
+WORKDIR /data
 VOLUME [ "/data" ]
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 EXPOSE 80 443 9000

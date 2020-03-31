@@ -13,27 +13,24 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     #详见官方build   不指定编译扩展包比较大 # PHPIZE_DEPS=autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
-        # for next ext
-        zlib-dev libpng-dev librdkafka-dev imagemagick-dev pcre-dev  && \ 
+        zlib-dev libpng-dev librdkafka-dev imagemagick-dev pcre-dev gettext-dev && \ 
     cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
-    # gd libwebp libjpeg libpng libpng-dev
-    docker-php-ext-install -j8 gd && docker-php-ext-enable gd && \
-    docker-php-ext-install -j8 pdo_mysql && docker-php-ext-enable pdo_mysql && \
-    # redis
     export CFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export CPPFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie" && \
-    pecl install -o -f redis && docker-php-ext-enable redis && \
+    # gd libwebp libjpeg libpng libpng-dev gettext-dev
+    docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
+    docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
+    # redis igbinary
+    pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
     pecl install -o -f swoole && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
     #rdkafka librdkafka librdkafka-dev
     pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
-    pecl install -o -f grpc && docker-php-ext-enable grpc  && \
-    pecl install -o -f protobuf && docker-php-ext-enable protobuf && \
+    pecl install -o -f protobuf grpc && docker-php-ext-enable protobuf grpc  && \
     # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
-    pecl install phalcon && docker-php-ext-enable phalcon && \
-    pecl install psr && docker-php-ext-enable psr && \
+    pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
     # cd /tmp && apk add bash && \
     # curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
     #     -o /tmp/phalcon.tar.gz && \
@@ -50,7 +47,7 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     phpize && \
     ./configure --with-php-config=`which php-config` && \
     make &&  make install && make clean && \
-    echo 'extension="imagick.so"' > "${PHP_INI_DIR}/conf.d/imagick.ini" && \
+    docker-php-ext-enable imagick && \
     # composer
     curl -SL "https://mirrors.aliyun.com/composer/composer.phar" -o /usr/local/bin/composer && \
     chmod a+x /usr/local/bin/composer && \
@@ -58,14 +55,14 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     composer config -g repo.packagist composer "https://mirrors.aliyun.com/composer/" && \
     echo 'PHP installed.' && php --version && php -m && \
     # runtime package  an clear
+    apk del --no-network .build-deps && \
     runDeps="$( \
         scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
             | tr ',' '\n' \
             | sort -u \
             | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
-    apk add --no-cache $runDeps; \
-    apk del --no-network .build-deps; \
+    apk add --no-cache $runDeps && \
     rm -rf /tmp/* ~/.pearrc /usr/local/lib/php/test
 ADD container-files /
 ENV TZ=Asia/Shanghai
@@ -77,6 +74,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         >> /etc/supervisord.conf && \
     chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord && \
     sed -i "1iload_module /usr/lib/nginx/modules/ngx_stream_module.so;"  /etc/nginx/nginx.conf
+WORKDIR /data
 VOLUME [ "/data" ]
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 EXPOSE 80 443 9000
