@@ -54,16 +54,18 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     echo 'composer installed.' && composer --version && \
     composer config -g repo.packagist composer "https://mirrors.aliyun.com/composer/" && \
     echo 'PHP installed.' && php --version && php -m && \
-    # runtime package  an clear
-    apk del --no-network .build-deps && \
-    runDeps="$( \
+    # runtime package  an clear 先提前在删除
+    PHP_RUNTIME_DEPS="$( \
         scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
             | tr ',' '\n' \
             | sort -u \
             | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
-    apk add --no-cache $runDeps && \
-    rm -rf /tmp/* ~/.pearrc /usr/local/lib/php/test
+    apk add --virtual .php-runtime-deps ${PHP_RUNTIME_DEPS} && \
+    apk del --no-network .build-deps && \
+    # 缩小so可执行文件大小
+    cd /usr/local/ && { find . -type f -exec strip --strip-all {} + || true; } && \
+    rm -rf /tmp/* ~/.pearrc /usr/local/lib/php/test /usr/src/*
 ADD container-files /
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
