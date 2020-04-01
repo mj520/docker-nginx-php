@@ -62,9 +62,9 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
             | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
     apk add --virtual .php-runtime-deps ${PHP_RUNTIME_DEPS} && \
-    apk del --no-network .build-deps && \
-    # 缩小so可执行文件大小
+    # 缩小so可执行文件大小 和 清理包
     cd /usr/local/ && { find . -type f -exec strip --strip-all {} + || true; } && \
+    apk del --no-network .build-deps && \
     rm -rf /tmp/* ~/.pearrc /usr/local/lib/php/test /usr/src/*
 ADD container-files /
 ENV TZ=Asia/Shanghai
