@@ -20,7 +20,7 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     export CPPFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie" && \
     # gd libwebp-dev libjpeg-turbo-dev libpng-dev gettext-dev freetype-dev
-    docker-php-ext-configure gd --with-freetype --with-jpeg --with-jpeg-dir=/usr/lib --with-webp --with-webp-dir=/usr/lib && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     # redis igbinary
