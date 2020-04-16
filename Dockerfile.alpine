@@ -11,14 +11,16 @@ RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repos
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
     echo 'nginx installed.' && nginx -v && apk del shadow && \
     #详见官方build   不指定编译扩展包比较大 # PHPIZE_DEPS=autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
+    #减小镜像直接 使用官方镜像加扩展 https://github.com/docker-library/php/blob/16766c6e5fe421432234020a21f2aba09e2a10c4/7.4/alpine3.11/fpm/Dockerfile
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         argon2-dev coreutils curl-dev libedit-dev libsodium-dev libxml2-dev linux-headers oniguruma-dev openssl-dev sqlite-dev \
-        zlib-dev libpng-dev librdkafka-dev imagemagick-dev pcre-dev gettext-dev && \ 
+        zlib-dev libpng-dev librdkafka-dev imagemagick-dev pcre-dev gettext-dev freetype-dev && \ 
     cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
     export CFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export CPPFLAGS="-fstack-protector-strong -fpic -fpie -O2" && \
     export LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie" && \
     # gd libwebp libjpeg libpng libpng-dev gettext-dev
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     # redis igbinary
