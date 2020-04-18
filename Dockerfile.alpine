@@ -44,9 +44,9 @@ ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
 ENV GPG_KEYS 42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312
 
-ENV PHP_VERSION 7.4.4
-ENV PHP_URL="https://www.php.net/get/php-7.4.4.tar.xz/from/this/mirror" PHP_ASC_URL="https://www.php.net/get/php-7.4.4.tar.xz.asc/from/this/mirror"
-ENV PHP_SHA256="1873c4cefdd3df9a78dcffb2198bba5c2f0464f55c9c960720c84df483fca74c" PHP_MD5=""
+ENV PHP_VERSION 7.3.17
+ENV PHP_URL="https://www.php.net/get/php-7.3.17.tar.xz/from/this/mirror" PHP_ASC_URL="https://www.php.net/get/php-7.3.17.tar.xz.asc/from/this/mirror"
+ENV PHP_SHA256="6a30304c27f7e7a94538f5ffec599f600ee93aedbbecad8aa4f8bec539b10ad8" PHP_MD5=""
 
 RUN set -eux; \
     \
@@ -131,9 +131,6 @@ RUN set -eux; \
         --with-openssl \
         --with-zlib \
         \
-# in PHP 7.4+, the pecl/pear installers are officially deprecated (requiring an explicit "--with-pear") and will be removed in PHP 8+; see also https://github.com/docker-library/php/issues/846#issuecomment-505638494
-        --with-pear \
-        \
 # bundled pcre does not support JIT on s390x
 # https://manpages.debian.org/stretch/libpcre3-dev/pcrejit.3.en.html#AVAILABILITY_OF_JIT_SUPPORT
         $(test "$gnuArch" = 's390x-linux-musl' && echo '--without-pcre-jit') \
@@ -167,14 +164,14 @@ RUN set -eux; \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
     pecl install -o -f protobuf grpc && docker-php-ext-enable protobuf grpc  && \
     # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
-    pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
-    # cd /tmp && apk add bash && \
-    # curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
-    #     -o /tmp/phalcon.tar.gz && \
-    # tar xvf phalcon.tar.gz -C /tmp && \
-    # cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
-    # ./install && \
-    # echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
+    # pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
+    cd /tmp && apk add bash && \
+    curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
+        -o /tmp/phalcon.tar.gz && \
+    tar xvf phalcon.tar.gz -C /tmp && \
+    cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
+    ./install && \
+    echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
     #imagick imagemagick-libs imagemagick-c++ imagemagick-dev;pecl install not fount;
     cd /tmp && \
     curl -SL "https://codeload.github.com/Imagick/imagick/tar.gz/${IMAGICK_VERSION}" \
