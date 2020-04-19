@@ -152,7 +152,7 @@ RUN set -eux; \
     cd /; \
     # update pecl channel definitions https://github.com/docker-library/php/issues/443
     pecl update-channels; \
-    
+    \
     cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
     # gd libwebp-dev libjpeg-turbo-dev libpng-dev gettext-dev freetype-dev
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
