@@ -152,7 +152,7 @@ RUN set -eux; \
     \
     cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
     # gd libwebp-dev libjpeg-turbo-dev libpng-dev gettext-dev freetype-dev
-    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/lib --with-jpeg-dir=/usr/local/lib  && \
     docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
     # redis igbinary
