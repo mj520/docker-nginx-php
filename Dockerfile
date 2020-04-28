@@ -29,6 +29,7 @@ RUN yum install -y wget epel-release && \
     ${phpV}-php-pdo \
     ${phpV}-php-process \
     ${phpV}-php-xml \
+    ${phpV}-php-pecl-zip \
     ${phpV}-php-pecl-mongodb \
     ${phpV}-php-pecl-imagick \
     ${phpV}-php-pecl-redis5 \

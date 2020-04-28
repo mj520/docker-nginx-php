@@ -92,7 +92,7 @@ RUN set -eux; \
         oniguruma-dev \
         openssl-dev \
         sqlite-dev \
-        zlib-dev libwebp-dev libjpeg-turbo-dev libpng-dev \
+        zlib-dev libwebp-dev libjpeg-turbo-dev libpng-dev libzip-dev \
         librdkafka-dev imagemagick-dev pcre-dev gettext-dev freetype-dev; \ 
     export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
@@ -156,8 +156,8 @@ RUN set -eux; \
     cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini && \
     # gd libwebp-dev libjpeg-turbo-dev libpng-dev gettext-dev freetype-dev
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
-    docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
-    docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets && \
+    docker-php-ext-install -j8 gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip && \
+    docker-php-ext-enable gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip && \
     # redis igbinary
     pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
     pecl install -o -f swoole && docker-php-ext-enable swoole && \
