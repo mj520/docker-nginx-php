@@ -1,7 +1,7 @@
 # mj520/nginx-php
 FROM centos:7
 MAINTAINER nginx-php
-ENV phpV=php73
+ENV phpV=php74
 RUN yum install -y wget epel-release && \
     wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
     wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo && \
@@ -38,7 +38,7 @@ RUN yum install -y wget epel-release && \
     ${phpV}-php-pecl-protobuf \
     ${phpV}-php-pecl-grpc \
     ${phpV}-php-pecl-psr \
-    ${phpV}-php-phalcon3 \
+    ${phpV}-php-phalcon4 \
     ${phpV}-php-pecl-swoole4 && \
     ln -sfF /opt/remi/${phpV}/enable /etc/profile.d/${phpV}-paths.sh && \
     ln -sfF /opt/remi/${phpV}/root/usr/bin/{pecl,phar,php,php-cgi,php-config,phpize} /usr/local/bin/. && \ 
