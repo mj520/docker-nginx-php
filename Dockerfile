@@ -9,6 +9,8 @@ RUN yum install -y wget epel-release && \
     rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm && \ 
     rpm -Uvh https://repo.mysql.com/mysql57-community-release-el7-11.noarch.rpm && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-* && \ 
+    sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
+    yum makecache && \
     yum install -y net-tools inotify-tools openssh-clients mysql-community-client && \ 
     yum install -y nginx  && \ 
     groupmod --gid 80 --new-name www nginx && \
