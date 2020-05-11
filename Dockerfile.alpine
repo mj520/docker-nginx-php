@@ -79,7 +79,7 @@ RUN set -eux; \
 
 COPY docker-php-* /usr/local/bin/
 
-ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so php
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository https://mirrors.aliyun.com/alpine/latest-stable/community gnu-libiconv
 
 RUN set -eux; \
