@@ -10,6 +10,6 @@ RUN apk update \
     && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config \
     && ssh-keygen -A \
     && echo "root:a3251825" | chpasswd \
-    && rm -rf /var/cache/apk/
+    && rm -rf /var/cache/apk/* #apk update and add is cache error
 ADD ssh.conf /etc/supervisord.conf.d/ssh.conf
 EXPOSE 22
