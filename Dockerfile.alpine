@@ -1,4 +1,4 @@
-FROM alpine:3.11
+FROM alpine:3.12
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
@@ -6,10 +6,10 @@ ARG MAKEFLAGS=-j8
 RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repositories && \
     echo "https://mirrors.aliyun.com/alpine/latest-stable/community" >> /etc/apk/repositories && \
     apk --update add --no-cache && apk add -U tzdata bash && \
-    apk add --no-cache nginx nginx-mod-stream shadow inotify-tools && \
+    apk add --no-cache nginx nginx-mod-stream shadow inotify-tools procps && \
     groupmod --gid 81 cdrw && groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
-    echo 'nginx installed.' && nginx -v && apk del shadow 
+    echo 'nginx installed.' && nginx -v && apk del shadow
 
 # dependencies required for running "phpize"
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
