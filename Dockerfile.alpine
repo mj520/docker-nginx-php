@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.14
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
@@ -35,18 +35,17 @@ ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www --with-fpm-group=w
 # Make PHP's main executable position-independent (improves ASLR security mechanism, and has no performance impact on x86_64)
 # Enable optimization (-O2)
 # Enable linker optimization (this sorts the hash buckets to improve cache locality, and is non-default)
-# Adds GNU HASH segments to generated executables (this is used if present, and is much faster than sysv hash; in this configuration, sysv hash is also generated)
 # https://github.com/docker-library/php/issues/272
 # -D_LARGEFILE_SOURCE and -D_FILE_OFFSET_BITS=64 (https://www.php.net/manual/en/intro.filesystem.php)
 ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
-ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
+ENV PHP_LDFLAGS="-Wl,-O1 -pie"
 
 ENV GPG_KEYS CBAF69F173A0FEA4B537F470D66C9593118BCCB6 F38252826ACD957EF380D39F2F7956BC5DA04B5D
 
-ENV PHP_VERSION 7.3.17
-ENV PHP_URL="https://www.php.net/get/php-7.3.17.tar.xz/from/this/mirror" PHP_ASC_URL="https://www.php.net/get/php-7.3.17.tar.xz.asc/from/this/mirror"
-ENV PHP_SHA256="6a30304c27f7e7a94538f5ffec599f600ee93aedbbecad8aa4f8bec539b10ad8" PHP_MD5=""
+ENV PHP_VERSION 7.3.29
+ENV PHP_URL="https://www.php.net/distributions/php-7.3.29.tar.xz" PHP_ASC_URL="https://www.php.net/distributions/php-7.3.29.tar.xz.asc"
+ENV PHP_SHA256="7db2834511f3d86272dca3daee3f395a5a4afce359b8342aa6edad80e12eb4d0"
 
 RUN set -eux; \
     \
@@ -60,15 +59,12 @@ RUN set -eux; \
     if [ -n "$PHP_SHA256" ]; then \
         echo "$PHP_SHA256 *php.tar.xz" | sha256sum -c -; \
     fi; \
-    if [ -n "$PHP_MD5" ]; then \
-        echo "$PHP_MD5 *php.tar.xz" | md5sum -c -; \
-    fi; \
     \
     if [ -n "$PHP_ASC_URL" ]; then \
         curl -fsSL -o php.tar.xz.asc "$PHP_ASC_URL"; \
         export GNUPGHOME="$(mktemp -d)"; \
         for key in $GPG_KEYS; do \
-            gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+            gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
         done; \
         gpg --batch --verify php.tar.xz.asc php.tar.xz; \
         gpgconf --kill all; \
