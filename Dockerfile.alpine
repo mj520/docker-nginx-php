@@ -3,8 +3,8 @@ ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
 ARG MAKEFLAGS=-j8
-RUN echo "https://mirrors.aliyun.com/alpine/latest-stable/main" > /etc/apk/repositories && \
-    echo "https://mirrors.aliyun.com/alpine/latest-stable/community" >> /etc/apk/repositories && \
+RUN echo "https://mirrors.aliyun.com/alpine/v3.14/main" > /etc/apk/repositories && \
+    echo "https://mirrors.aliyun.com/alpine/v3.14/community" >> /etc/apk/repositories && \
     apk --update add --no-cache && apk add -U tzdata bash && \
     apk add --no-cache nginx nginx-mod-stream shadow inotify-tools procps && \
     groupmod --gid 81 cdrw && groupmod --gid 80 --new-name www nginx && \
@@ -159,6 +159,7 @@ RUN set -eux; \
     pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
     pecl install -o -f swoole && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
+    pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
     #rdkafka librdkafka librdkafka-dev
     pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
