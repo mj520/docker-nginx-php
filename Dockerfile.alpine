@@ -160,6 +160,7 @@ RUN set -eux; \
     pecl install -o -f swoole && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
     pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
+    pecl install -o -f xlswriter && docker-php-ext-enable xlswriter && \
     #rdkafka librdkafka librdkafka-dev
     pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
