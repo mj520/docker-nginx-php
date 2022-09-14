@@ -1,0 +1,136 @@
+FROM alpine:3.16
+
+ENV TENGINE_VERSION 2.3.3
+
+# nginx: https://git.io/vSIyj
+
+ENV CONFIG "\
+        --prefix=/etc/nginx \
+        --sbin-path=/usr/sbin/nginx \
+        --modules-path=/usr/lib/nginx/modules \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/data/logs/nginx/error.log \
+        --http-log-path=/data/logs/nginx/access.log \
+        --pid-path=/var/run/nginx.pid \
+        --lock-path=/var/run/nginx.lock \
+        --http-client-body-temp-path=/data/tmp/nginx/client_temp \
+        --http-proxy-temp-path=/data/tmp/nginx/proxy_temp \
+        --http-fastcgi-temp-path=/data/tmp/nginx/fastcgi_temp \
+        --http-uwsgi-temp-path=/data/tmp/nginx/uwsgi_temp \
+        --http-scgi-temp-path=/data/tmp/nginx/scgi_temp \
+        --user=www \
+        --group=www \
+        --with-http_ssl_module \
+        --with-http_realip_module \
+        --with-http_addition_module \
+        --with-http_sub_module \
+        --with-http_dav_module \
+        --with-http_flv_module \
+        --with-http_mp4_module \
+        --with-http_gunzip_module \
+        --with-http_gzip_static_module \
+        --with-http_random_index_module \
+        --with-http_secure_link_module \
+        --with-http_stub_status_module \
+        --with-http_auth_request_module \
+        --with-http_xslt_module=dynamic \
+        --with-http_image_filter_module=dynamic \
+        --with-http_geoip_module=dynamic \
+        --with-threads \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
+        --with-stream_realip_module \
+        --with-stream_geoip_module=dynamic \
+        --with-http_slice_module \
+        --with-mail \
+        --with-mail_ssl_module \
+        --with-compat \
+        --with-file-aio \
+        --with-http_v2_module \
+        --add-module=modules/ngx_http_upstream_check_module \
+        --add-module=modules/ngx_http_upstream_session_sticky_module \
+        --add-module=modules/ngx_cache_purge-2.5.2 \
+        --add-module=modules/nginx-stream-upsync-module-1.2.2 \
+        "
+RUN echo "https://mirrors.aliyun.com/alpine/v3.16/main" > /etc/apk/repositories && \
+    echo "https://mirrors.aliyun.com/alpine/v3.16/community" >> /etc/apk/repositories && \
+    apk --update add --no-cache && apk add -U tzdata bash wget curl ca-certificates shadow && \
+    groupmod --gid 81 cdrw && addgroup -g 80 -S www && \
+    adduser -S -D -H -u 80 -h /data/www -s /sbin/nologin -G www -g www www && \
+    apk del shadow && \
+    apk add --no-cache --virtual .build-deps \
+                gcc \
+                libc-dev \
+                make \
+                openssl-dev \
+                pcre-dev \
+                zlib-dev \
+                linux-headers \
+                curl \
+                libxslt-dev \
+                gd-dev \
+                geoip-dev \
+        && curl -L "https://ghproxy.com/https://github.com/alibaba/tengine/archive/$TENGINE_VERSION.tar.gz" -o tengine.tar.gz \
+        && mkdir -p /usr/src \
+        && tar -zxC /usr/src -f tengine.tar.gz \
+        && rm tengine.tar.gz \
+        && cd /usr/src/tengine-$TENGINE_VERSION \
+        && curl -L "https://ghproxy.com/https://github.com/xiaokai-wang/nginx-stream-upsync-module/archive/refs/tags/v1.2.2.tar.gz" -o upsync.tar.gz \
+        && tar -zxC /usr/src/tengine-$TENGINE_VERSION/modules -f upsync.tar.gz \
+        && rm  upsync.tar.gz \
+        && curl -L "https://ghproxy.com/https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/2.5.2.tar.gz" -o cache_purge.tar.gz \
+        && tar -zxC /usr/src/tengine-$TENGINE_VERSION/modules -f cache_purge.tar.gz \
+        && rm  cache_purge.tar.gz \
+        && curl -L "https://ghproxy.com/https://github.com/xiaokai-wang/nginx-stream-upsync-module/archive/refs/tags/v1.2.2.tar.gz" -o upsync.tar.gz \
+        && tar -zxC /usr/src/tengine-$TENGINE_VERSION/modules -f upsync.tar.gz \
+        && rm  upsync.tar.gz \
+        # && ls -l /usr/src/tengine-$TENGINE_VERSION/modules 
+        && ./configure $CONFIG  \
+        && make -j$(getconf _NPROCESSORS_ONLN) \
+        && make install \
+        && rm -rf /etc/nginx/html/ \
+        && mkdir /etc/nginx/conf.d/ \
+        && mkdir -p /usr/share/nginx/html/ \
+        && install -m644 html/index.html /usr/share/nginx/html/ \
+        && install -m644 html/50x.html /usr/share/nginx/html/ \
+        && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
+        && strip /usr/sbin/nginx* \
+        && strip /usr/lib/nginx/modules/*.so \
+        && rm -rf /usr/src/tengine-$NGINX_VERSION \
+        \
+        # Bring in gettext so we can get `envsubst`, then throw
+        # the rest away. To do this, we need to install `gettext`
+        # then move `envsubst` out of the way so `gettext` can
+        # be deleted completely, then move `envsubst` back.
+        && apk add --no-cache --virtual .gettext gettext \
+        && mv /usr/bin/envsubst /tmp/ \
+        \
+        && runDeps="$( \
+                scanelf --needed --nobanner --format '%n#p' /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \
+                        | tr ',' '\n' \
+                        | sort -u \
+                        | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+        )" \
+        && apk add --no-cache --virtual .nginx-rundeps $runDeps \
+        && apk del .build-deps \
+        && apk del .gettext \
+        && mv /tmp/envsubst /usr/local/bin/ \
+        \
+        # forward request and error logs to docker log collector
+        && ln -sf /dev/stdout /data/logs/nginx/access.log \
+        && ln -sf /dev/stderr /data/logs/nginx/error.log \
+        \
+        && rm -rf /var/cache/apk/* && rm -rf /tmp/*
+ADD container-files/docker-entrypoint.d /docker-entrypoint.d
+COPY container-files/docker-entrypoint.d/docker-entrypoint.sh /
+COPY container-files/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    echo "ls -l \$*" > /usr/bin/ll && chmod +x /usr/bin/ll
+WORKDIR /data
+VOLUME [ "/data" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+EXPOSE 80 443
+STOPSIGNAL SIGTERM
+CMD ["nginx", "-g", "daemon off;"]
