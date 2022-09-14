@@ -3,15 +3,11 @@ FROM centos:7
 MAINTAINER nginx-php
 ENV phpV=php73
 RUN yum install -y wget epel-release && \
-    #wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
-    #wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo && \
     rpm -Uvh https://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/remi-release-7.rpm && \ 
-    rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm && \ 
-    rpm -Uvh https://repo.mysql.com/mysql57-community-release-el7-11.noarch.rpm && \
+    rpm -Uvh https://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-* && \ 
-    #sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
     yum makecache && \
-    yum install -y net-tools inotify-tools openssh-clients mysql-community-client && \ 
+    yum install -y net-tools inotify-tools openssh-clients && \ 
     yum install -y nginx  && \ 
     groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
