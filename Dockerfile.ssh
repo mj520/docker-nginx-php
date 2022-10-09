@@ -1,4 +1,4 @@
-FROM mj520/nginx-php:alpine
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/nginx-php:alpine
 RUN apk update \
     && apk upgrade --self-upgrade-only --no-cache \
     && apk add --no-cache bash bash-completion \
