@@ -15,7 +15,7 @@ RUN echo "https://mirrors.aliyun.com/alpine/v3.14/main" > /etc/apk/repositories 
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
 ENV PHPIZE_DEPS autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
 # persistent / runtime deps
-RUN apk add --no-cache ca-certificates curl tar xz openssl
+RUN apk add --no-cache ca-certificates curl tar xz openssl bind-tools
 # https://github.com/docker-library/php/issues/494
 
 ENV PHP_INI_DIR /usr/local/etc/php
@@ -166,7 +166,7 @@ RUN set -eux; \
     pecl install -o -f protobuf grpc && docker-php-ext-enable protobuf grpc  && \
     # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
     # pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
-    cd /tmp && apk add bash && \
+    cd /tmp && \
     curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
         -o /tmp/phalcon.tar.gz && \
     tar xvf phalcon.tar.gz -C /tmp && \

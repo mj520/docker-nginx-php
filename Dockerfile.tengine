@@ -55,7 +55,7 @@ ENV CONFIG "\
         "
 RUN echo "https://mirrors.aliyun.com/alpine/v3.16/main" > /etc/apk/repositories && \
     echo "https://mirrors.aliyun.com/alpine/v3.16/community" >> /etc/apk/repositories && \
-    apk --update add --no-cache && apk add -U tzdata bash wget curl ca-certificates shadow && \
+    apk --update add --no-cache && apk add -U tzdata bash wget curl ca-certificates shadow bind-tools && \
     groupmod --gid 81 cdrw && addgroup -g 80 -S www && \
     adduser -S -D -H -u 80 -h /data/www -s /sbin/nologin -G www -g www www && \
     apk del shadow && \
