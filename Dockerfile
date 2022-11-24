@@ -53,7 +53,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     chmod +x /docker-entrypoint.sh && \
     echo -e "[inet_http_server]\nport=127.0.0.1:9001\n[include]\nfiles = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" \
         >> /etc/supervisord.conf && \
-    chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord
+    chmod +x /docker-entrypoint.sh /supervisor* && mv /supervisor* /usr/bin/
 WORKDIR /data
 VOLUME [ "/data" ]
 ENTRYPOINT [ "/docker-entrypoint.sh" ]

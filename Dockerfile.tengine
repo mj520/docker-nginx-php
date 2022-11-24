@@ -116,11 +116,6 @@ RUN echo "https://mirrors.aliyun.com/alpine/v3.16/main" > /etc/apk/repositories 
         && apk del .build-deps \
         && apk del .gettext \
         && mv /tmp/envsubst /usr/local/bin/ \
-        \
-        # forward request and error logs to docker log collector
-        && ln -sf /dev/stdout /data/logs/nginx_access.log \
-        && ln -sf /dev/stderr /data/logs/nginx_error.log \
-        \
         && rm -rf /var/cache/apk/* && rm -rf /tmp/*
 ADD container-files/docker-entrypoint.d /docker-entrypoint.d
 COPY container-files/docker-entrypoint.d/docker-entrypoint.sh /
