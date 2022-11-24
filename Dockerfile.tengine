@@ -122,7 +122,7 @@ COPY container-files/docker-entrypoint.d/docker-entrypoint.sh /
 COPY container-files/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    echo "ls -l \$*" > /usr/bin/ll && chmod +x /usr/bin/ll
+    echo "ls -l \$*" > /usr/bin/ll && chmod +x /usr/bin/ll /docker-entrypoint.sh
 WORKDIR /data
 VOLUME [ "/data" ]
 ENTRYPOINT ["/docker-entrypoint.sh"]
