@@ -5,6 +5,7 @@ docker container with Nginx + PHP-FPM from centos:7 use supervisor.
 
 #### - Nginx 1.14+ stream
 ```
+--cap-add=SYS_PTRACE #https://www.xyhtml5.com/25471.html
 /etc/nginx/fastcgi_params is default
 php PATH_INFO fix See default.conf below for details
 ```
