@@ -1,0 +1,9 @@
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/nginx-php:alpine
+
+RUN set -eux; \
+    apk add $PHPIZE_DEPS && \
+    pecl install -o -f psr phalcon-4.1.2 && docker-php-ext-enable psr phalcon && \
+    apk del $PHPIZE_DEPS && \
+    cd /usr/local/ && { find . -type f -exec strip --strip-all {} + || true; }; \
+    \
+    rm -rf /tmp/*
