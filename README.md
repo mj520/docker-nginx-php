@@ -94,4 +94,6 @@ php session.save default /tmp, on windows session_save_path("volume/dir");
     Warning: session_start(): Failed to read session data: files (path: volume/dir) in ...
     please change to default
 ```
+getenv临时不生效 run -e 或者 修改 /etc/profile 后重启容器
+进入容器不生效 在~/.bashrc里面加一句source /etc/profile有些变量不生效
 #Thinks
