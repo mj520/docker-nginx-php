@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.16
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.14
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
