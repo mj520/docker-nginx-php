@@ -156,7 +156,7 @@ RUN set -eux; \
     docker-php-ext-enable iconv gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip&& \
     # redis igbinary
     pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
-    pecl install -o -f swoole && docker-php-ext-enable swoole && \
+    pecl install -o -f swoole-4.8.11 && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
     pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
     pecl install -o -f xlswriter && docker-php-ext-enable xlswriter && \
