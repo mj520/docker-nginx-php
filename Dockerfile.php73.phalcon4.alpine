@@ -1,0 +1,25 @@
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/nginx-php:alpine
+ENV PHALCON_VERSION=4.1.3
+ENV PSR_VERSION=1.1.0
+RUN set -eux; \
+    apk add $PHPIZE_DEPS && \
+    cd /tmp && \
+    curl -SL "https://github.com/jbboehr/php-psr/archive/v${PSR_VERSION}.tar.gz" \
+        -o /tmp/php-psr.tar.gz && \
+    tar xvf php-psr.tar.gz -C /tmp && \
+    cd "/tmp/php-psr-${PSR_VERSION}" && \
+    /usr/local/bin/phpize && \
+    ./configure && make && make install && \
+    echo 'extension="psr.so"' > "${PHP_INI_DIR}/conf.d/psr.ini" && \
+    php -m |grep psr && \
+    cd /tmp && \
+    curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
+        -o /tmp/phalcon.tar.gz && \
+    tar xvf phalcon.tar.gz -C /tmp && \
+    cd "/tmp/cphalcon-${PHALCON_VERSION}/build" && \
+    ./install && \
+    echo 'extension="phalcon.so"' > "${PHP_INI_DIR}/conf.d/phalcon.ini" && \
+    php -m |grep phalcon && \
+    cd /usr/local/ && { find . -type f -exec strip --strip-all {} + || true; }; \
+    apk del $PHPIZE_DEPS && \
+    rm -rf /tmp/*

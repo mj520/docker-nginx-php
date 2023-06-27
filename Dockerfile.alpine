@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.14
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
@@ -157,9 +157,9 @@ RUN set -eux; \
     docker-php-ext-enable iconv gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip && \
     # redis igbinary
     pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
-    pecl install -o -f swoole && docker-php-ext-enable swoole && \
+    pecl install -o -f swoole-4.8.11 && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
-    pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
+    pecl install -o -f xdebug-3.1.6 && docker-php-ext-enable xdebug && \
     pecl install -o -f xlswriter && docker-php-ext-enable xlswriter && \
     #rdkafka librdkafka librdkafka-dev
     pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
@@ -260,7 +260,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     echo -e "[inet_http_server]\nport=127.0.0.1:9001\n[include]\nfiles = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" \
         >> /etc/supervisord.conf && \
-    chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord && \
+    chmod +x /docker-entrypoint.sh /supervisor* && mv /supervisor* /usr/bin/ && \
     echo "ls -l \$*" > /usr/bin/ll && chmod +x /usr/bin/ll && \
     sed -i "1iload_module /usr/lib/nginx/modules/ngx_stream_module.so;"  /etc/nginx/nginx.conf
 WORKDIR /data
