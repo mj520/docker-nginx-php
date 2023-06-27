@@ -1,7 +1,7 @@
 FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.14
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
-ENV PHALCON_VERSION=3.4.5
+ENV PHALCON_VERSION=4.1.2
 ARG MAKEFLAGS=-j8
 RUN echo "https://mirrors.aliyun.com/alpine/v3.14/main" > /etc/apk/repositories && \
     echo "https://mirrors.aliyun.com/alpine/v3.14/community" >> /etc/apk/repositories && \
@@ -166,7 +166,7 @@ RUN set -eux; \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
     pecl install -o -f protobuf grpc && docker-php-ext-enable protobuf grpc  && \
     # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
-    pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
+    pecl install -o -f psr phalcon-${PHALCON_VERSION} && docker-php-ext-enable psr phalcon && \
     # cd /tmp && \
     # curl -SL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" \
     #     -o /tmp/phalcon.tar.gz && \
