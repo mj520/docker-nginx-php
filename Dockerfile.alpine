@@ -1,14 +1,15 @@
-FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.16
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.12
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
 ARG MAKEFLAGS=-j8
-RUN echo "https://mirrors.aliyun.com/alpine/v3.14/main" > /etc/apk/repositories && \
-    echo "https://mirrors.aliyun.com/alpine/v3.14/community" >> /etc/apk/repositories && \
+RUN echo "https://mirrors.aliyun.com/alpine/v3.12/main" > /etc/apk/repositories && \
+    echo "https://mirrors.aliyun.com/alpine/v3.12/community" >> /etc/apk/repositories && \
     apk --update add --no-cache && apk add -U tzdata bash && \
     apk add --no-cache nginx nginx-mod-stream shadow inotify-tools procps && \
     groupmod --gid 81 cdrw && groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
+    chown www:www -R /var/lib/nginx  && \
     echo 'nginx installed.' && nginx -v && apk del shadow
 
 # dependencies required for running "phpize"
@@ -156,9 +157,9 @@ RUN set -eux; \
     docker-php-ext-enable iconv gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip&& \
     # redis igbinary
     pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
-    pecl install -o -f swoole && docker-php-ext-enable swoole && \
+    pecl install -o -f swoole-4.8.11 && docker-php-ext-enable swoole && \
     pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
-    pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
+    pecl install -o -f xdebug-3.1.6 && docker-php-ext-enable xdebug && \
     pecl install -o -f xlswriter && docker-php-ext-enable xlswriter && \
     #rdkafka librdkafka librdkafka-dev
     pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
