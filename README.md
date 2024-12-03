@@ -5,6 +5,7 @@ docker container with Nginx + PHP-FPM from centos:7 use supervisor.
 
 #### - Nginx 1.14+ stream
 ```
+--cap-add=SYS_PTRACE #https://www.xyhtml5.com/25471.html
 /etc/nginx/fastcgi_params is default
 php PATH_INFO fix See default.conf below for details
 ```
@@ -96,4 +97,14 @@ php session.save default /tmp, on windows session_save_path("volume/dir");
 ```
 getenv临时不生效 run -e 或者 修改 /etc/profile 后重启容器
 进入容器不生效 在~/.bashrc里面加一句source /etc/profile有些变量不生效
+
+#### xdebug for /data/conf/php.ini
+```
+xdebug.mode=debug
+xdebug.start_with_request=yes
+xdebug.client_port=9003
+xdebug.client_host=host.docker.internal
+xdebug.remote_handler=dbgp
+xdebug.idekey=PHPSTORM
+```
 #Thinks

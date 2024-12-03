@@ -1,14 +1,15 @@
-FROM alpine:3.14
+FROM registry.cn-hangzhou.aliyuncs.com/mj520/alpine:3.12
 ENV TZ=Asia/Shanghai
 ENV IMAGICK_VERSION=3.4.4
 ENV PHALCON_VERSION=3.4.5
 ARG MAKEFLAGS=-j8
-RUN echo "https://mirrors.aliyun.com/alpine/v3.14/main" > /etc/apk/repositories && \
-    echo "https://mirrors.aliyun.com/alpine/v3.14/community" >> /etc/apk/repositories && \
+RUN echo "https://mirrors.aliyun.com/alpine/v3.12/main" > /etc/apk/repositories && \
+    echo "https://mirrors.aliyun.com/alpine/v3.12/community" >> /etc/apk/repositories && \
     apk --update add --no-cache && apk add -U tzdata bash && \
     apk add --no-cache nginx nginx-mod-stream shadow inotify-tools procps && \
     groupmod --gid 81 cdrw && groupmod --gid 80 --new-name www nginx && \
     usermod --uid 80 --home /data/www --gid 80 --login www --shell /sbin/nologin --comment www nginx && \
+    chown www:www -R /var/lib/nginx  && \
     echo 'nginx installed.' && nginx -v && apk del shadow
 
 # dependencies required for running "phpize"
@@ -155,15 +156,17 @@ RUN set -eux; \
     docker-php-ext-install -j8 iconv gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip && \
     docker-php-ext-enable iconv gd pdo_mysql mysqli bcmath exif gettext pcntl sockets zip&& \
     # redis igbinary
-    pecl install -o -f redis igbinary && docker-php-ext-enable redis igbinary && \
-    pecl install -o -f swoole && docker-php-ext-enable swoole && \
-    pecl install -o -f mongodb && docker-php-ext-enable mongodb && \
-    pecl install -o -f xdebug && docker-php-ext-enable xdebug && \
-    pecl install -o -f xlswriter && docker-php-ext-enable xlswriter && \
+    pecl install -o -f igbinary-3.2.14 && docker-php-ext-enable igbinary && \
+    pecl install -o -f redis-5.3.7 && docker-php-ext-enable redis && \
+    pecl install -o -f swoole-4.8.11 && docker-php-ext-enable swoole && \
+    pecl install -o -f mongodb-1.16.2 && docker-php-ext-enable mongodb && \
+    pecl install -o -f xdebug-3.1.6 && docker-php-ext-enable xdebug && \
+    pecl install -o -f xlswriter-1.5.5 && docker-php-ext-enable xlswriter && \
     #rdkafka librdkafka librdkafka-dev
-    pecl install -o -f rdkafka && docker-php-ext-enable rdkafka  && \
+    pecl install -o -f rdkafka-6.0.3 && docker-php-ext-enable rdkafka  && \
     #grpc protobuf zlib-dev linux-headers https://www.testdoc.cn/grpc-1.27.0.tgz
-    pecl install -o -f protobuf grpc && docker-php-ext-enable protobuf grpc  && \
+    pecl install -o -f protobuf-3.22.0 && docker-php-ext-enable protobuf && \
+    pecl install -o -f grpc-1.49.3 && docker-php-ext-enable grpc && \
     # phalcon4 pcre-dev php7.4  isn't supported for Phalcon 3.4
     # pecl install -o -f psr phalcon && docker-php-ext-enable psr phalcon && \
     cd /tmp && \
@@ -259,8 +262,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     mkdir -p /data/conf && touch php.ini && ln -s /data/conf/php.ini /etc/php.d/zz.php.ini && \
     echo -e "[inet_http_server]\nport=127.0.0.1:9001\n[include]\nfiles = /etc/supervisord.conf.d/*.conf /data/conf/supervisord.conf.d/*.conf" \
         >> /etc/supervisord.conf && \
-    chmod +x /docker-entrypoint.sh /supervisord && mv /supervisord /usr/bin/supervisord && \
+    chmod +x /docker-entrypoint.sh /supervisor* && mv /supervisor* /usr/bin/ && \
     echo "ls -l \$*" > /usr/bin/ll && chmod +x /usr/bin/ll && \
+    /docker-entrypoint.sh && \
     sed -i "1iload_module /usr/lib/nginx/modules/ngx_stream_module.so;"  /etc/nginx/nginx.conf
 WORKDIR /data
 VOLUME [ "/data" ]
